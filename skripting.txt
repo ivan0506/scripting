@@ -1,0 +1,54 @@
+
+grep bash /etc/passwd > /tmp/bash-users
+sort < /tmp/bash-users
+find / -name core
+find / -name core 2> /dev/null
+find / -name core 2> /tmp/corefiles 2> /dev/null
+find / -name core 2> /dev/null | less
+ps -ef | grep httpd
+cut -d: -f7 < /etc/passwd | sort -u         ######комманда cut выбирает из файла /etc/passwd 
+                                            ######пути к оболочке и сортирует по уникальным именам 
+mkdir foo; cd foo; touch afile
+cd foo || echo "No such directory"
+cp --preserve --recursive /etc/* /spare/backup || echo"Did NOT make backup"
+
+
+etcdir='/etc'
+echo $etcdir    ########Использование переменных пробелы перед знаком присваивания и после не ставить!!! 
+                ########иначе будет распознано как имя комманды
+rev=8
+echo "Saved  ${rev}th version of mdadm.conf."
+
+$  mylang="Pennsylvania  Dutch" 
+$  echo  "I  speak  ${mylang} ." 
+I  speak  Pennsylvania  Dutch. 
+$  echo  'I speak  ${mylang} .' 
+I  speak  $(mylang) . 
+
+$  echo  "There  are  'wc  -1  <  /etc/passwd'  lines  in  the  passwd  file." 
+There  are  28 lines  in  the  passwd  file. 
+############переменные окружения
+printenv
+~/.profile
+~/.bash_profile
+
+
+cut
+sort 
+du  -sh  /usr/*  |  sort  -h
+cut -d: -f7 /etc/passwd | sort | uniq -c   ##сортировка по оболочкам.
+wc ## подсчет строк слов символов
+tee ##копирование входного потока
+find  /  -name  core  |  tee  /dev/tty  |  wc  -l
+head less tail -f
+
+grep -i 
+-l
+ sudo grep  -1  mdadm  /var/log/*
+ tail -f /var/log/messages | grep --line-buffered ZFS
+#!/usr/bin/env ruby
+
+echo printf"\taa\tbb\tcc\n"
+
+
+ 
