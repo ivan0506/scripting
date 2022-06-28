@@ -1,0 +1,185 @@
+#!/bin/bash
+set -euo pipefail
+
+# =======================================
+# Подготовка машины VM-hub1-vmmp3
+# =======================================
+sudo virt-builder centos-7.8 \
+    --format qcow2 \
+    --output VM-hub1-vmmp3.qcow2 \
+    --size 30G \
+    --hostname VM-hub1-vmmp3 \
+    --root-password password:rootpassword \
+    --run-command "touch /etc/udev/rules.d/70-persistent-net.rules" \
+    --append-line '/etc/udev/rules.d/70-persistent-net.rules:SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="fa:10:3e:55:b9:3f", ATTR{type}=="1", KERNEL=="ens*", NAME="ens161"' \
+    --append-line '/etc/hosts:' \
+    --append-line '/etc/hosts:10.55.23.36 VM-hub2-vmcs4' \
+    --append-line '/etc/hosts:10.55.23.37 VM-hub2-vmcs5' \
+    --append-line '/etc/hosts:10.55.23.39 VM-hub2-vmcs6' \
+    --append-line '/etc/hosts:10.55.23.40 VM-hub2-vmmp2' \
+    --append-line '/etc/hosts:10.55.23.41 VM-hub2-vmmp4' \
+    --append-line '/etc/hosts:10.55.24.40 VM-hub1-vmmp1' \
+    --append-line '/etc/hosts:10.55.24.41 VM-hub1-vmmp3' \
+    --append-line '/etc/hosts:10.55.24.36 VM-hub1-vmcs1' \
+    --append-line '/etc/hosts:10.55.24.37 VM-hub1-vmcs2' \
+    --append-line '/etc/hosts:10.55.24.39 VM-hub1-vmcs3' \
+    --append-line '/etc/rc.d/rc.local:' \
+    --append-line '/etc/rc.d/rc.local: ip route add 10.55.23.0/24 via 10.55.24.1' \
+    --firstboot-command 'useradd -G wheel user1' \
+    --firstboot-command 'echo "password" | passwd --stdin user1'
+
+
+sudo virt-install \
+    --ivmmport \
+    --name VM-hub1-vmmp3 \
+    --ram 4092 \
+    --vcpus 4 \
+    --disk VM-hub1-vmmp3.qcow2 \
+    --network network=nat-net,mac=fa:10:3e:55:b9:3f \
+    --noautoconsole
+
+# =======================================
+# Подготовка машины VM-hub1-vmmp1
+# =======================================
+sudo virt-builder centos-7.8\
+    --format qcow2 \
+    --output VM-hub1-vmmp1.qcow2 \
+    --size 30G \
+    --hostname VM-hub1-vmmp1 \
+    --root-password password:rootpassword \
+    --run-command "touch /etc/udev/rules.d/70-persistent-net.rules" \
+    --append-line '/etc/udev/rules.d/70-persistent-net.rules:SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="fa:10:3e:55:11:a6", ATTR{type}=="1", KERNEL=="ens*", NAME="ens160"' \
+    --append-line '/etc/hosts:' \
+    --append-line '/etc/hosts:10.55.23.36 VM-hub2-vmcs4' \
+    --append-line '/etc/hosts:10.55.23.37 VM-hub2-vmcs5' \
+    --append-line '/etc/hosts:10.55.23.39 VM-hub2-vmcs6' \
+    --append-line '/etc/hosts:10.55.23.40 VM-hub2-vmmp2' \
+    --append-line '/etc/hosts:10.55.23.41 VM-hub2-vmmp4' \
+    --append-line '/etc/hosts:10.55.24.40 VM-hub1-vmmp1' \
+    --append-line '/etc/hosts:10.55.24.41 VM-hub1-vmmp3' \
+    --append-line '/etc/hosts:10.55.24.36 VM-hub1-vmcs1' \
+    --append-line '/etc/hosts:10.55.24.37 VM-hub1-vmcs2' \
+    --append-line '/etc/hosts:10.55.24.39 VM-hub1-vmcs3' \
+    --append-line '/etc/rc.d/rc.local:' \
+    --append-line '/etc/rc.d/rc.local: ip route add 10.55.23.0/24 via 10.55.24.1' \
+    --firstboot-command 'useradd -G wheel user1' \
+    --firstboot-command 'echo "password" | passwd --stdin user1'
+
+
+sudo virt-install \
+    --ivmmport \
+    --name VM-hub1-vmmp1 \
+    --ram 4092 \
+    --vcpus 4 \
+    --disk VM-hub1-vmmp1.qcow2 \
+    --network network=nat-net,mac=fa:10:3e:55:11:a6 \
+    --noautoconsole
+# =======================================
+# Подготовка машины VM-hub1-vmcs1
+# =======================================
+sudo virt-builder centos-7.8 \
+    --format qcow2 \
+    --output VM-hub1-vmcs1.qcow2 \
+    --size 30G \
+    --hostname VM-hub1-vmcs1 \
+    --root-password password:rootpassword \
+    --run-command "touch /etc/udev/rules.d/70-persistent-net.rules" \
+    --append-line '/etc/udev/rules.d/70-persistent-net.rules:SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="fa:12:3e:f0:13:33", ATTR{type}=="1", KERNEL=="ens*", NAME="ens160"' \
+    --append-line '/etc/hosts:' \
+    --append-line '/etc/hosts:10.55.23.36 VM-hub2-vmcs4' \
+    --append-line '/etc/hosts:10.55.23.37 VM-hub2-vmcs5' \
+    --append-line '/etc/hosts:10.55.23.39 VM-hub2-vmcs6' \
+    --append-line '/etc/hosts:10.55.23.40 VM-hub2-vmmp2' \
+    --append-line '/etc/hosts:10.55.23.41 VM-hub2-vmmp4' \
+    --append-line '/etc/hosts:10.55.24.40 VM-hub1-vmmp1' \
+    --append-line '/etc/hosts:10.55.24.41 VM-hub1-vmmp3' \
+    --append-line '/etc/hosts:10.55.24.36 VM-hub1-vmcs1' \
+    --append-line '/etc/hosts:10.55.24.37 VM-hub1-vmcs2' \
+    --append-line '/etc/hosts:10.55.24.39 VM-hub1-vmcs3' \
+    --append-line '/etc/rc.d/rc.local:' \
+    --append-line '/etc/rc.d/rc.local: ip route add 10.55.23.0/24 via 10.55.24.1' \
+    --firstboot-command 'useradd -G wheel user1' \
+    --firstboot-command 'echo "password" | passwd --stdin user1'
+
+
+sudo virt-install \
+    --ivmmport \
+    --name VM-hub1-vmcs1 \
+    --ram 4092 \
+    --vcpus 4 \
+    --disk VM-hub1-vmcs1.qcow2 \
+    --network network=nat-net,mac=fa:12:3e:f0:13:33 \
+    --noautoconsole
+# =======================================
+# Подготовка машины VM-hub1-vmcs2
+# =======================================
+sudo virt-builder centos-7.8 \
+    --format qcow2 \
+    --output VM-hub1-vmcs2.qcow2 \
+    --size 30G \
+    --hostname VM-hub1-vmcs2 \
+    --root-password password:rootpassword \
+    --run-command "touch /etc/udev/rules.d/70-persistent-net.rules" \
+    --append-line '/etc/udev/rules.d/70-persistent-net.rules:SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="fa:13:3e:7d:12:18", ATTR{type}=="1", KERNEL=="ens*", NAME="ens192"' \
+    --append-line '/etc/hosts:' \
+    --append-line '/etc/hosts:10.55.23.36 VM-hub2-vmcs4' \
+    --append-line '/etc/hosts:10.55.23.37 VM-hub2-vmcs5' \
+    --append-line '/etc/hosts:10.55.23.39 VM-hub2-vmcs6' \
+    --append-line '/etc/hosts:10.55.23.40 VM-hub2-vmmp2' \
+    --append-line '/etc/hosts:10.55.23.41 VM-hub2-vmmp4' \
+    --append-line '/etc/hosts:10.55.24.40 VM-hub1-vmmp1' \
+    --append-line '/etc/hosts:10.55.24.41 VM-hub1-vmmp3' \
+    --append-line '/etc/hosts:10.55.24.36 VM-hub1-vmcs1' \
+    --append-line '/etc/hosts:10.55.24.37 VM-hub1-vmcs2' \
+    --append-line '/etc/hosts:10.55.24.39 VM-hub1-vmcs3' \
+    --append-line '/etc/rc.d/rc.local:' \
+    --append-line '/etc/rc.d/rc.local: ip route add 10.55.23.0/24 via 10.55.24.1' \
+    --firstboot-command 'useradd -G wheel user1' \
+    --firstboot-command 'echo "password" | passwd --stdin user1'
+
+
+sudo virt-install \
+    --ivmmport \
+    --name VM-hub1-vmcs2 \
+    --ram 4092 \
+    --vcpus 4 \
+    --disk VM-hub1-vmcs2.qcow2 \
+    --network network=nat-net,mac=fa:13:3e:7d:12:18 \
+    --noautoconsole
+# =======================================
+# Подготовка машины VM-hub1-vmcs3
+# =======================================
+sudo virt-builder centos-7.8 \
+    --format qcow2 \
+    --output VM-hub1-vmcs3.qcow2 \
+    --size 30G \
+    --hostname VM-hub1-vmcs3 \
+    --root-password password:rootpassword \
+    --run-command "touch /etc/udev/rules.d/70-persistent-net.rules" \
+    --append-line '/etc/udev/rules.d/70-persistent-net.rules:SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="fa:10:3e:11:17:ef", ATTR{type}=="1", KERNEL=="ens*", NAME="ens192"' \
+    --append-line '/etc/hosts:' \
+    --append-line '/etc/hosts:10.55.23.36 VM-hub2-vmcs4' \
+    --append-line '/etc/hosts:10.55.23.37 VM-hub2-vmcs5' \
+    --append-line '/etc/hosts:10.55.23.39 VM-hub2-vmcs6' \
+    --append-line '/etc/hosts:10.55.23.40 VM-hub2-vmmp2' \
+    --append-line '/etc/hosts:10.55.23.41 VM-hub2-vmmp4' \
+    --append-line '/etc/hosts:10.55.24.40 VM-hub1-vmmp1' \
+    --append-line '/etc/hosts:10.55.24.41 VM-hub1-vmmp3' \
+    --append-line '/etc/hosts:10.55.24.36 VM-hub1-vmcs1' \
+    --append-line '/etc/hosts:10.55.24.37 VM-hub1-vmcs2' \
+    --append-line '/etc/hosts:10.55.24.39 VM-hub1-vmcs3' \
+    --append-line '/etc/rc.d/rc.local:' \
+    --append-line '/etc/rc.d/rc.local: ip route add 10.55.23.0/24 via 10.55.24.1' \
+    --firstboot-command 'useradd -G wheel user1' \
+    --firstboot-command 'echo "password" | passwd --stdin user1'
+
+
+sudo virt-install \
+    --ivmmport \
+    --name VM-hub1-vmcs3 \
+    --ram 4092 \
+    --vcpus 4 \
+    --disk VM-hub1-vmcs3.qcow2 \
+    --network network=nat-net,mac=fa:10:3e:11:17:ef \
+    --noautoconsole
+
